@@ -26,7 +26,7 @@ jobs:
       uses: lukka/run-vcpkg@v10
       with:
         vcpkgArguments: 'imgui:x86-windows-static'
-        vcpkgGitCommitId: "64fabc9"
+        vcpkgGitCommitId: "64fabc9401d9296273ed67cd8c39f92c113f9ea5"
         vcpkgDirectory: '${{ github.workspace }}/vcpkg'
         runVcpkgInstall: true
     
