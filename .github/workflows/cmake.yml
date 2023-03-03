@@ -24,7 +24,7 @@ jobs:
           submodules: 'recursive'
     
     - name: Install VcPkg
-      uses: lukka/get-vcpkg
+      uses: lukka/get-vcpkg@main
       # uses: lukka/run-vcpkg@v10
       # with:
       #   vcpkgArguments: 'imgui:x86-windows-static'
