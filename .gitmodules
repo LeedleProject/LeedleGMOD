@@ -1,0 +1,3 @@
+[submodule "thirdparty/SafeCall"]
+	path = thirdparty/SafeCall
+	url = https://github.com/altoid29/SafeCall.git
