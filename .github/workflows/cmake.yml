@@ -26,10 +26,9 @@ jobs:
       uses: lukka/run-vcpkg@v4
       with:
         vcpkgArguments: 'imgui:x86-windows-static'
-        vcpkgDirectory: '${{ github.workspace }}/vcpkg'
     
     - name: Configure CMake
-      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_TOOLCHAIN_FILE='${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake' -DCMAKE_CXX_STANDARD=26 
+      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_TOOLCHAIN_FILE='${{ env.VCPKG_ROOT }}/vcpkg/scripts/buildsystems/vcpkg.cmake' -DCMAKE_CXX_STANDARD=26 
 
     - name: Build
       # Build your program with the given configuration
