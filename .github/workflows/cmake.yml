@@ -23,7 +23,7 @@ jobs:
           submodules: 'recursive'
     
     - name: Install VcPkg
-      uses: lukka/run-vcpkg@v4
+      uses: lukka/run-vcpkg@v10
       with:
         vcpkgArguments: 'imgui:x86-windows-static'
         vcpkgGitCommitId: '${{ matrix.vcpkgCommitId }}'
