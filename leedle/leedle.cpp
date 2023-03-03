@@ -3,7 +3,7 @@
 #include <thread>
 #include <winuser.h>
 
-#include <SafeCall.h>
+#include "math.hpp"
 
 auto entry_point(HMODULE mod) {
     

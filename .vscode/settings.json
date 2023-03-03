@@ -85,7 +85,8 @@
         "xstddef": "cpp",
         "xtr1common": "cpp",
         "xtree": "cpp",
-        "xutility": "cpp"
+        "xutility": "cpp",
+        "random": "cpp"
     },
     "files.exclude": {
         "**/build/**": true,

@@ -1,3 +1,6 @@
 [submodule "thirdparty/SafeCall"]
 	path = thirdparty/SafeCall
 	url = https://github.com/altoid29/SafeCall.git
+[submodule "thirdparty/math"]
+	path = thirdparty/math
+	url = https://github.com/zmij/math
