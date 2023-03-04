@@ -173,26 +173,28 @@ namespace memory {
         static MemoryModule get_module_by_name(std::string_view name);
     };
 
-    template<typename T>
-    struct VMTHook {
-        T detour;
-        T original = nullptr;
+    namespace hook_methods {
+        template<typename T>
+        struct VMTHook {
+            T detour;
+            T original = nullptr;
 
-        auto hook(uintptr_t** vmt, size_t index) {
-            auto vmt_base = *vmt;
+            auto hook(uintptr_t** vmt, size_t index) {
+                auto vmt_base = *vmt;
 
-            original = reinterpret_cast<T>(vmt_base[index]);
+                original = reinterpret_cast<T>(vmt_base[index]);
 
-            DWORD protection;
-            VirtualProtect((LPVOID)&vmt_base[index], sizeof(uintptr_t), PAGE_EXECUTE_READWRITE, &protection);
-            vmt_base[index] = reinterpret_cast<uintptr_t>(detour);
-            VirtualProtect((LPVOID)&vmt_base[index], sizeof(uintptr_t), protection, &protection);
-        }
+                DWORD protection;
+                VirtualProtect((LPVOID)&vmt_base[index], sizeof(uintptr_t), PAGE_EXECUTE_READWRITE, &protection);
+                vmt_base[index] = reinterpret_cast<uintptr_t>(detour);
+                VirtualProtect((LPVOID)&vmt_base[index], sizeof(uintptr_t), protection, &protection);
+            }
 
-        auto unhook(uintptr_t** vmt, size_t index) {
-            *vmt[index] = reinterpret_cast<uintptr_t>(original);
-        }
-    };
+            auto unhook(uintptr_t** vmt, size_t index) {
+                *vmt[index] = reinterpret_cast<uintptr_t>(original);
+            }
+        };
+    }
 
     static inline memory::MemoryModule game_render_overlay = memory::MemoryModule(
         "GameOverlayRenderer.dll"
