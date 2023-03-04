@@ -9,6 +9,7 @@
 #include "math.hpp"
 
 #include "memory.hpp"
+#include "hooks.hpp"
 
 auto warning(std::string_view message) {
     using warning_fn = void(__cdecl*)(const char*);
@@ -16,21 +17,6 @@ auto warning(std::string_view message) {
     static auto warning_function = mod.get_symbol<warning_fn>("Warning");
 
     warning_function.invoke(message.data());
-}
-
-constexpr auto initialize_hooks(const auto& ...hooks) {
-    constexpr auto initialize_hook = [](const auto& hook) {
-        constexpr auto has_initialize = requires(decltype(hook) _hk) {
-            _hk.initialize();
-        };
-
-        if constexpr (has_initialize) {
-            hook.initialize();
-        }
-        hook.hook();
-    };
-
-    (initialize_hook(hooks), ...);
 }
 
 struct basic_hook {
@@ -41,10 +27,15 @@ struct basic_hook {
     static void hook() {
         warning("Hello from hook!x2\n");
     }
+
+    static void unhook() {
+        warning("Hello from hook!x3\n");
+    }
 };
 
 auto __stdcall entry_point(HMODULE mod) {
-    initialize_hooks(basic_hook{});
+    hooks::initialize_hooks(basic_hook{});
+    hooks::remove_hooks(basic_hook{});
 }
 
 bool __stdcall DllMain(HMODULE mod, DWORD ul_reason_for_call, LPVOID lpReserved) {
