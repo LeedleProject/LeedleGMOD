@@ -6,11 +6,10 @@
     "configurations": [
         {
             "type": "lldb",
-            "request": "launch",
-            "name": "Debug",
-            "program": "${workspaceFolder}/<executable file>",
-            "args": [],
-            "cwd": "${workspaceFolder}"
+            "request": "attach",
+            "name": "Attach",
+            "program": "hl2.exe"
         }
+
     ]
 }

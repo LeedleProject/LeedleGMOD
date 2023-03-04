@@ -40,8 +40,9 @@ inline std::uint8_t* pattern_scanner(uint8_t* begin, uint8_t* end, const std::st
                 break;
             }
         }
-        if (found)
+        if (found) {
             return &scan_bytes[i];
+        }
     }
 
     return nullptr;
@@ -52,6 +53,6 @@ memory::Address<> memory::MemoryScanner::scan_impl(uint8_t* begin, uint8_t* end)
 }
 
 memory::MemoryModule memory::MemoryModule::get_module_by_name(std::string_view name) {
-    auto handle = GetModuleHandle(name.data());
+    auto* handle = GetModuleHandle(name.data());
     return handle;
 }

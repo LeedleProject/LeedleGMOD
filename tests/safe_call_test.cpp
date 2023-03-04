@@ -2,7 +2,8 @@
 #include <SafeCall.h>
 #include <string>
 #include <array>
-#include <gtest/gtest.h>
+#include <algorithm>
+#include <iostream>
 
 bool __stdcall check_return_address() {
     MEMORY_BASIC_INFORMATION mbi;
@@ -20,5 +21,5 @@ int main() {
     while (!GetModuleHandleA("user32.dll"))
         LoadLibraryA("user32.dll");
     auto result = SafeCall::Type::Stdcall<int>((uintptr_t)check_return_address, SafeCall::Address::GetGadget("user32.dll"));
-    return !result;
+    return not result;
 }

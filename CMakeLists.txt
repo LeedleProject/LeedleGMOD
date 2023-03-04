@@ -1,8 +1,11 @@
 cmake_minimum_required(VERSION 3.0.0)
 project(leedle VERSION 0.1.0)
 
+add_compile_options(-m32)
+
 set(CMAKE_CXX_STANDARD 26)
 set(VCPKG_TARGET_TRIPLET "x86-windows-static")
+set(CMAKE_CXX_CLANG_TIDY clang-tidy -checks=-*,readability-*)
 
 add_subdirectory(tests)
 

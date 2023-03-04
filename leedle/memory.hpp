@@ -174,7 +174,6 @@ namespace memory {
     };
 
     template<typename T>
-        requires (std::is_pointer_v<T>)
     struct VMTHook {
         T detour;
         T original = nullptr;
