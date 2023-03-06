@@ -179,15 +179,13 @@ namespace memory {
             T detour;
             T original = nullptr;
 
-            auto hook(uintptr_t** vmt, size_t index) {
-                auto vmt_base = *vmt;
-
-                original = reinterpret_cast<T>(vmt_base[index]);
+            auto hook(uintptr_t* vmt, size_t index) {
+                original = reinterpret_cast<T>(vmt[index]);
 
                 DWORD protection;
-                VirtualProtect((LPVOID)&vmt_base[index], sizeof(uintptr_t), PAGE_EXECUTE_READWRITE, &protection);
-                vmt_base[index] = reinterpret_cast<uintptr_t>(detour);
-                VirtualProtect((LPVOID)&vmt_base[index], sizeof(uintptr_t), protection, &protection);
+                VirtualProtect((LPVOID)&vmt[index], sizeof(uintptr_t), PAGE_EXECUTE_READWRITE, &protection);
+                vmt[index] = reinterpret_cast<uintptr_t>(detour);
+                VirtualProtect((LPVOID)&vmt[index], sizeof(uintptr_t), protection, &protection);
             }
 
             auto unhook(uintptr_t** vmt, size_t index) {

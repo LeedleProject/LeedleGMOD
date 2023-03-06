@@ -33,6 +33,13 @@
 
 // DESIGEND FOR DYMANIC HOOKS. READ THE DOCUMENTATION IN THIS HEADER FOR MORE INFORMATION.
 namespace hooks {
+    struct IHook {
+        virtual ~IHook() = default;
+        virtual void initialize() = 0;
+        virtual void hook() = 0;
+        virtual void unhook() = 0;
+    };
+
     // If you want to use static hooks, just pass it as an hook_type{}. Value is temperary and will be deleted by compiler on compiletime.
     constexpr auto initialize_hooks(auto&&... hooks) {
         constexpr auto initialize_hook = [](auto&& hook) {

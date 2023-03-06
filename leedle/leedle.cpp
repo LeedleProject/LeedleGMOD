@@ -11,6 +11,8 @@
 #include "memory.hpp"
 #include "hooks.hpp"
 
+#include "render.hpp"
+
 auto warning(std::string_view message) {
     using warning_fn = void(__cdecl*)(const char*);
     static memory::MemoryModule mod("tier0.dll");
@@ -34,8 +36,8 @@ struct basic_hook {
 };
 
 auto __stdcall entry_point(HMODULE mod) {
-    hooks::initialize_hooks(basic_hook{});
-    hooks::remove_hooks(basic_hook{});
+    render::Render render;
+    render.setup_hooks();
 }
 
 bool __stdcall DllMain(HMODULE mod, DWORD ul_reason_for_call, LPVOID lpReserved) {

@@ -22,7 +22,7 @@ int main() {
     auto foo_local = std::make_shared<Foo>();
 
     memory::hook_methods::VMTHook<int(__fastcall*)(Foo*, void*)> hook { .detour = foo_detour };
-    hook.hook((uintptr_t**)foo_local.get(), 0);
+    hook.hook(*(uintptr_t**)foo_local.get(), 0);
 
     auto result = foo_local->foo();
     return result;

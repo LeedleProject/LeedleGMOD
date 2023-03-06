@@ -93,4 +93,5 @@
         "**/.git/**": true,
         "**/.cache/**": true,
     },
+    //"cmakeExplorer.buildDir": "${buildDirectory}/tests/",
 }
