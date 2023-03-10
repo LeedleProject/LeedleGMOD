@@ -21,11 +21,13 @@ include_directories(${MAGIC_ENUM_INCLUDE_DIRS} ${LOGURU_INCLUDE_DIRS})
 add_library(leedle SHARED 
   leedle/leedle.cpp leedle/memory.cpp
   leedle/render.cpp thirdparty/kiero/kiero.cpp
-  ${LOGURU_INCLUDE_DIRS}/loguru.cpp
+  ${LOGURU_INCLUDE_DIRS}/loguru.cpp thirdparty/imgui_backends/imgui_impl_dx9.cpp
+  thirdparty/imgui_backends/imgui_impl_win32.cpp
 )
 target_link_libraries(leedle PRIVATE imgui::imgui sago::platform_folders)
 target_include_directories(leedle PRIVATE "thirdparty/SafeCall" "thirdparty/math/include" 
-  "thirdparty/kiero/" ${LOGURU_INCLUDE_DIRS} ${WIL_INCLUDE_DIRS} "thirdparty/utf8.h" "thirdparty/toml11")
+  "thirdparty/kiero/" ${LOGURU_INCLUDE_DIRS} ${WIL_INCLUDE_DIRS} "thirdparty/utf8.h" "thirdparty/toml11"
+  "thirdparty/imgui_backends/")
 
 set_property(TARGET leedle PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 

@@ -2,18 +2,23 @@
 
 #include <filesystem>
 #include <format>
+#include <functional>
 #include <platform_folders.h>
 #include <string>
 #include <string_view>
 
+#include "render.hpp"
+
 #include "memory.hpp"
 
 namespace leedle {
-    struct IModule {
-        virtual ~IModule() = default;
-        virtual void setup_hooks() = 0;
-        virtual void uninitialize() = 0;
+    struct Leedle : leedle::IModule {
+        void setup_hooks() override {}
+        void uninitialize() override {}
+
+        std::function<void()> unload_function;
     };
+    static inline Leedle LEEDLE;
 
     namespace fs {
         inline auto get_leedle_root() -> std::filesystem::path {

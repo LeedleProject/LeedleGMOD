@@ -10,25 +10,15 @@
 #include <loguru.hpp>
 
 #include <Windows.h>
-#include <debugapi.h>
-#include <functional>
-#include <minwindef.h>
-#include <processenv.h>
-#include <shellapi.h>
-#include <stdexcept>
-#include <stdlib.h>
-#include <string.h>
-#include <string_view>
-#include <thread>
-#include <type_traits>
-#include <winuser.h>
 
 #include "math.hpp"
 
 #include "memory.hpp"
 #include "hooks.hpp"
 
+#include "leedle.hpp"
 #include "render.hpp"
+#include "gui.hpp"
 
 auto leedle_terminate_handler() {
     LOG_S(INFO) << "Terminating..." << std::endl;
@@ -86,8 +76,17 @@ auto __stdcall entry_point(HMODULE mod) {
     
     leedle::logger::initialize_logging();
 
-    render::Render render;
-    render.setup_hooks();
+    leedle::LEEDLE.unload_function = [mod]() {
+        gui::GUI.uninitialize();
+        render::RENDER.uninitialize();
+        leedle::LEEDLE.uninitialize();
+        
+        FreeLibraryAndExitThread(mod, 0);  
+    };
+
+    leedle::LEEDLE.setup_hooks();
+    render::RENDER.setup_hooks();
+    gui::GUI.setup_hooks();
 }
 
 bool __stdcall DllMain(HMODULE mod, DWORD ul_reason_for_call, LPVOID lpReserved) {

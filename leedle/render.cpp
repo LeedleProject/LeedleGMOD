@@ -4,6 +4,8 @@
 #include <kiero.h>
 #include <loguru.hpp>
 #include <magic_enum.hpp>
+#include <imgui.h>
+#include <winuser.h>
 
 using namespace render;
 
@@ -20,9 +22,17 @@ void Render::uninitialize() {
 long Render::end_scene_callback(IDirect3DDevice9* device) {
     if (not DEVICE) {
         DEVICE = device;
+        LOG_S(INFO) << "Device: " << std::hex << device << std::endl;
+    
+        ImGui::CreateContext();
     }
     
     return end_scane_hook.vmt_hook.original(device);
+}
+
+long Render::wndproc_callback(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
+    
+    return CallWindowProc(WndProcHook::original, hwnd, msg, wparam, lparam);
 }
 
 void EndSceneHook::initialize() {
@@ -42,4 +52,16 @@ void EndSceneHook::unhook() {
 
 long EndSceneHook::end_scene_hooked(IDirect3DDevice9* device) {
     return EndSceneHook::callback(device);
+}
+
+void WndProcHook::initialize() {
+    
+}
+
+void WndProcHook::hook() {
+    
+}
+
+void WndProcHook::unhook() {
+    
 }
