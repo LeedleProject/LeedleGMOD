@@ -14,17 +14,17 @@
 
 namespace render {
 struct EndSceneHook: public hooks::IHook {
-    using function_type = long(__cdecl*)(IDirect3DDevice9*);
+    using function_type = long(__stdcall*)(IDirect3DDevice9*);
 
     static inline std::function<long(IDirect3DDevice9* device)> callback;
 
-    memory::hook_methods::VMTHook<function_type, 42> vmt_hook;
+    memory::hook_methods::MinHook<function_type> _hook;
 
     void initialize() override;
     void hook() override;
     void unhook() override;
 
-    static long end_scene_hooked(IDirect3DDevice9* device);
+    static long __stdcall end_scene_hooked(IDirect3DDevice9* device);
 };
 
 struct WndProcHook: public hooks::IHook {
@@ -34,11 +34,14 @@ struct WndProcHook: public hooks::IHook {
     void initialize() override;
     void hook() override;
     void unhook() override;
+
+    static long wndproc_hooked(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
 };
 
 class Render: leedle::IModule {
   private:
     EndSceneHook end_scane_hook;
+    WndProcHook wnd_proc_hook;
 
     long end_scene_callback(IDirect3DDevice9* device);
     LRESULT __stdcall wndproc_callback(

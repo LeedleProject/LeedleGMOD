@@ -11,10 +11,14 @@
 #include "memory.hpp"
 #include "render.hpp"
 
+#include <loguru.hpp>
+
 
 namespace leedle {
 struct Leedle: leedle::IModule {
-    void setup_hooks() override {}
+    void setup_hooks() override {
+        LOG_S(INFO) << "Core initialized";
+    }
     void uninitialize() override {}
 
     std::function<void()> unload_function;

@@ -12,12 +12,15 @@
 #include <filesystem>
 #include <format>
 #include <loguru.hpp>
+#include <thread>
 
 #include "gui.hpp"
 #include "hooks.hpp"
 #include "math.hpp"
 #include "memory.hpp"
 #include "render.hpp"
+
+#include <MinHook.h>
 
 auto leedle_terminate_handler() {
     LOG_S(INFO) << "Terminating..." << std::endl;
@@ -94,6 +97,8 @@ auto __stdcall entry_point(HMODULE mod) {
         FreeLibraryAndExitThread(mod, 0);
     };
 
+    CHECK_S(MH_Initialize() == MH_OK) << "Cannot initialize core staff 0x1";
+
     leedle::LEEDLE.setup_hooks();
     render::RENDER.setup_hooks();
     gui::GUI.setup_hooks();
@@ -104,7 +109,7 @@ bool __stdcall DllMain(
     DWORD ul_reason_for_call,
     LPVOID lpReserved) {
     if (ul_reason_for_call == DLL_PROCESS_ATTACH) {
-        CreateThread(0, 0, (LPTHREAD_START_ROUTINE)entry_point, mod, 0, 0);
+        std::thread(entry_point, mod).detach();
     }
     return TRUE;
 }

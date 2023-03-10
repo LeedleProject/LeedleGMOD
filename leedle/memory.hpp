@@ -1,14 +1,21 @@
 #pragma once
 
+#include <format>
 #include <memory>
 #include <string>
 #include <ranges>
 #include <functional>
+#include <MinHook.h>
 
 #include <Windows.h>
 #include <Psapi.h>
+#include <minwindef.h>
 #include <vadefs.h>
 #include <vcruntime.h>
+#include <exception>
+#include <stdexcept>
+#include <assert.h>
+
 #pragma comment (lib,"psapi.lib")
 
 namespace memory {
@@ -190,8 +197,28 @@ namespace memory {
                 VirtualProtect((LPVOID)&vmt[index], sizeof(uintptr_t), protection, &protection);
             }
 
-            auto unhook(uintptr_t** vmt) {
-                *vmt[index] = reinterpret_cast<uintptr_t>(original);
+            auto unhook(uintptr_t* vmt) {
+                vmt[index] = reinterpret_cast<uintptr_t>(original);
+            }
+        };
+
+        template<typename T>
+        struct MinHook {
+            T detour;
+            T original = nullptr;
+
+            auto hook(uintptr_t target) {
+                auto status = MH_CreateHook((LPVOID)target, (LPVOID)detour, (LPVOID*)&original);
+                if (status != MH_OK) {
+                    throw std::runtime_error("Failed to create hook");
+                }
+                MH_EnableHook((LPVOID)target);
+            }
+
+            auto unhook() {
+                assert(original != nullptr);
+                MH_DisableHook((LPVOID)original);
+                MH_RemoveHook((LPVOID)original);
             }
         };
     }

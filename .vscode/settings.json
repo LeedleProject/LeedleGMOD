@@ -93,5 +93,8 @@
         "**/.git/**": true,
         "**/.cache/**": true,
     },
+    "lldb.displayFormat": "auto",
+    "lldb.dereferencePointers": true,
+    "lldb.consoleMode": "commands",
     //"cmakeExplorer.buildDir": "${buildDirectory}/tests/",
 }

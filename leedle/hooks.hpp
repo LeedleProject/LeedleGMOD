@@ -41,8 +41,8 @@ namespace hooks {
     };
 
     // If you want to use static hooks, just pass it as an hook_type{}. Value is temperary and will be deleted by compiler on compiletime.
-    constexpr auto initialize_hooks(auto&&... hooks) {
-        constexpr auto initialize_hook = [](auto&& hook) {
+    constexpr auto initialize_hooks(auto&... hooks) {
+        constexpr auto initialize_hook = [](auto& hook) {
             constexpr auto has_initialize = requires(decltype(hook) _hk) {
                 _hk.initialize();
             };
