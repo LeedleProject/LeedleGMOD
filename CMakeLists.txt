@@ -24,6 +24,7 @@ add_library(leedle SHARED
   ${LOGURU_INCLUDE_DIRS}/loguru.cpp thirdparty/imgui_backends/imgui_impl_dx9.cpp
   thirdparty/imgui_backends/imgui_impl_win32.cpp
 )
+
 target_link_libraries(leedle PRIVATE imgui::imgui sago::platform_folders)
 target_include_directories(leedle PRIVATE "thirdparty/SafeCall" "thirdparty/math/include" 
   "thirdparty/kiero/" ${LOGURU_INCLUDE_DIRS} ${WIL_INCLUDE_DIRS} "thirdparty/utf8.h" "thirdparty/toml11"
