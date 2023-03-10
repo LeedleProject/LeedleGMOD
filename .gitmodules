@@ -4,3 +4,21 @@
 [submodule "thirdparty/math"]
 	path = thirdparty/math
 	url = https://github.com/zmij/math
+[submodule "thirdparty/loguru"]
+	path = thirdparty/loguru
+	url = https://github.com/emilk/loguru.git
+[submodule "thirdparty/PlatformFolders"]
+	path = thirdparty/PlatformFolders
+	url = https://github.com/sago007/PlatformFolders.git
+[submodule "thirdparty/magic_enum"]
+	path = thirdparty/magic_enum
+	url = https://github.com/Neargye/magic_enum.git
+[submodule "thirdparty/wil"]
+	path = thirdparty/wil
+	url = https://github.com/microsoft/wil.git
+[submodule "thirdparty/utf8.h"]
+	path = thirdparty/utf8.h
+	url = https://github.com/sheredom/utf8.h.git
+[submodule "thirdparty/toml11"]
+	path = thirdparty/toml11
+	url = https://github.com/ToruNiina/toml11.git

@@ -7,6 +7,8 @@
 
 #include <Windows.h>
 #include <Psapi.h>
+#include <vadefs.h>
+#include <vcruntime.h>
 #pragma comment (lib,"psapi.lib")
 
 namespace memory {
@@ -174,12 +176,12 @@ namespace memory {
     };
 
     namespace hook_methods {
-        template<typename T>
+        template<typename T, size_t index>
         struct VMTHook {
             T detour;
             T original = nullptr;
 
-            auto hook(uintptr_t* vmt, size_t index) {
+            auto hook(uintptr_t* vmt) {
                 original = reinterpret_cast<T>(vmt[index]);
 
                 DWORD protection;
@@ -188,7 +190,7 @@ namespace memory {
                 VirtualProtect((LPVOID)&vmt[index], sizeof(uintptr_t), protection, &protection);
             }
 
-            auto unhook(uintptr_t** vmt, size_t index) {
+            auto unhook(uintptr_t** vmt) {
                 *vmt[index] = reinterpret_cast<uintptr_t>(original);
             }
         };

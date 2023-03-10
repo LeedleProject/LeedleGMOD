@@ -12,10 +12,9 @@ namespace render {
     struct EndSceneHook : public hooks::IHook {
         using function_type = long(__cdecl*)(IDirect3DDevice9*);
 
-        constexpr static auto index = 42;
         static inline std::function<long(IDirect3DDevice9* device)> callback;
 
-        memory::hook_methods::VMTHook<function_type> vmt_hook;
+        memory::hook_methods::VMTHook<function_type, 42> vmt_hook;
         
         void initialize() override;
         void hook() override;
@@ -32,7 +31,6 @@ namespace render {
     public:
         Render() {
             EndSceneHook::callback = std::bind(&Render::end_scene_callback, this, std::placeholders::_1);
-            end_scane_hook.initialize();
         }   
 
         void setup_hooks() override;
