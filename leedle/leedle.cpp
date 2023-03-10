@@ -1,7 +1,11 @@
-#include <array>
-#include <chrono>
+#include "leedle.hpp"
+
+#include <Windows.h>
 #include <corecrt_math.h>
 #include <corecrt_startup.h>
+
+#include <array>
+#include <chrono>
 #include <cstdlib>
 #include <cstring>
 #include <exception>
@@ -9,16 +13,11 @@
 #include <format>
 #include <loguru.hpp>
 
-#include <Windows.h>
-
-#include "math.hpp"
-
-#include "memory.hpp"
-#include "hooks.hpp"
-
-#include "leedle.hpp"
-#include "render.hpp"
 #include "gui.hpp"
+#include "hooks.hpp"
+#include "math.hpp"
+#include "memory.hpp"
+#include "render.hpp"
 
 auto leedle_terminate_handler() {
     LOG_S(INFO) << "Terminating..." << std::endl;
@@ -34,7 +33,8 @@ auto leedle_terminate_handler() {
     } catch (...) {
         std::array<char, MAX_PATH> buffer;
         if (strerror_s(buffer.data(), buffer.size(), errno) != 0) {
-            LOG_S(ERROR) << "Unknown error: " << errno << " : " << buffer.data() << std::endl;
+            LOG_S(ERROR) << "Unknown error: " << errno << " : " << buffer.data()
+                         << std::endl;
         }
     }
 
@@ -50,16 +50,24 @@ void leedle::logger::initialize_logging() {
     loguru::g_preamble_thread = false;
 
     loguru::set_fatal_handler([](const auto& message) {
-        throw std::runtime_error(std::format("{}:[{}] {}", message.filename, message.prefix, message.message));
+        throw std::runtime_error(std::format(
+            "{}:[{}] {}",
+            message.filename,
+            message.prefix,
+            message.message));
     });
 
-    loguru::add_callback("gamelogs", [](auto user_data, const loguru::Message& message) {
-        if (message.verbosity >= loguru::Verbosity_INFO) {
-            leedle::logger::game_message("[LEEDLE] {}", message.message);
-        } else {
-            leedle::logger::game_warning("[LEEDLE] {}", message.message);
-        }
-    }, 0, loguru::Verbosity_MAX);
+    loguru::add_callback(
+        "gamelogs",
+        [](auto user_data, const loguru::Message& message) {
+            if (message.verbosity >= loguru::Verbosity_INFO) {
+                leedle::logger::game_message("[LEEDLE] {}", message.message);
+            } else {
+                leedle::logger::game_warning("[LEEDLE] {}", message.message);
+            }
+        },
+        0,
+        loguru::Verbosity_MAX);
 
     auto leedle_home = leedle::fs::get_leedle_root();
     if (not std::filesystem::exists(leedle_home)) {
@@ -67,21 +75,23 @@ void leedle::logger::initialize_logging() {
     }
 
     auto log_path = leedle_home.append("leedle.log");
-    loguru::add_file(log_path.string().c_str(), 
-        loguru::FileMode::Append, loguru::Verbosity_MAX);
+    loguru::add_file(
+        log_path.string().c_str(),
+        loguru::FileMode::Append,
+        loguru::Verbosity_MAX);
 }
 
 auto __stdcall entry_point(HMODULE mod) {
     std::set_terminate(leedle_terminate_handler);
-    
+
     leedle::logger::initialize_logging();
 
     leedle::LEEDLE.unload_function = [mod]() {
         gui::GUI.uninitialize();
         render::RENDER.uninitialize();
         leedle::LEEDLE.uninitialize();
-        
-        FreeLibraryAndExitThread(mod, 0);  
+
+        FreeLibraryAndExitThread(mod, 0);
     };
 
     leedle::LEEDLE.setup_hooks();
@@ -89,7 +99,10 @@ auto __stdcall entry_point(HMODULE mod) {
     gui::GUI.setup_hooks();
 }
 
-bool __stdcall DllMain(HMODULE mod, DWORD ul_reason_for_call, LPVOID lpReserved) {
+bool __stdcall DllMain(
+    HMODULE mod,
+    DWORD ul_reason_for_call,
+    LPVOID lpReserved) {
     if (ul_reason_for_call == DLL_PROCESS_ATTACH) {
         CreateThread(0, 0, (LPTHREAD_START_ROUTINE)entry_point, mod, 0, 0);
     }
