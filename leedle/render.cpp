@@ -55,6 +55,8 @@ long Render::end_scene_callback(IDirect3DDevice9* device) {
             LOG_S(INFO) << "DX9 backend initialized";
 
             ImGui::GetIO().IniFilename = nullptr;
+            ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+            ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_NoMouseCursorChange;
 
             static const ImWchar ranges[] = {
                 0x0020,
@@ -64,7 +66,7 @@ long Render::end_scene_callback(IDirect3DDevice9* device) {
                 0,
             };
 
-            auto font = ImGui::GetIO().Fonts->AddFontFromFileTTF(
+            auto* font = ImGui::GetIO().Fonts->AddFontFromFileTTF(
                 "C:/Windows/Fonts/L_10646.ttf",
                 18.f,
                 0,
@@ -80,7 +82,11 @@ long Render::end_scene_callback(IDirect3DDevice9* device) {
     ImGui_ImplWin32_NewFrame();
     ImGui::NewFrame();
 
-    ImGui::Begin("Hello, world!");
+    ImGui::Begin("First");
+
+    ImGui::End();
+
+    ImGui::Begin("Second");
 
     ImGui::End();
 
