@@ -204,7 +204,7 @@ namespace memory {
 
         template<typename T>
         struct MinHook {
-            T detour;
+            LPVOID detour;
             T original = nullptr;
 
             auto hook(uintptr_t target) {
@@ -223,23 +223,23 @@ namespace memory {
         };
     }
 
-    static inline memory::MemoryModule game_render_overlay = memory::MemoryModule(
+    inline memory::MemoryModule game_render_overlay = memory::MemoryModule(
         "GameOverlayRenderer.dll"
     );
 
-    static inline memory::MemoryModule client = memory::MemoryModule(
+    inline memory::MemoryModule client = memory::MemoryModule(
         "client.dll"
     );
 
-    static inline memory::MemoryModule engine = memory::MemoryModule(
+    inline memory::MemoryModule engine = memory::MemoryModule(
         "engine.dll"
     );
 
-    static inline memory::MemoryModule material_surface = memory::MemoryModule(
+    inline memory::MemoryModule material_surface = memory::MemoryModule(
         "vguimatsurface.dll"
     );
 
-    static inline memory::MemoryModule lua_shared = memory::MemoryModule(
+    inline memory::MemoryModule lua_shared = memory::MemoryModule(
         "lua_shared.dll"
     );
 }

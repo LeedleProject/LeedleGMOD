@@ -23,7 +23,7 @@ struct Leedle: leedle::IModule {
 
     std::function<void()> unload_function;
 };
-static inline Leedle LEEDLE;
+inline Leedle LEEDLE;
 
 namespace fs {
     inline auto get_leedle_root() -> std::filesystem::path {
@@ -39,7 +39,7 @@ namespace logger {
     game_message(const std::format_string<Args...> format, Args&&... args) {
         static memory::MemoryModule mod("tier0.dll");
         static auto conmessage_function =
-            mod.get_symbol<void(__cdecl*)(const char*)>("?ConMsg@@YAXPBDZZ");
+            mod.get_symbol<void(__cdecl*)(const char*)>("?ConMsg@@YAXPEBDZZ");
         conmessage_function.invoke(
             std::format(format, args...).append("\n").c_str());
     }

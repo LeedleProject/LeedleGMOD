@@ -21,6 +21,7 @@
 #include "render.hpp"
 
 #include <MinHook.h>
+#include <winuser.h>
 
 auto leedle_terminate_handler() {
     LOG_S(INFO) << "Terminating..." << std::endl;

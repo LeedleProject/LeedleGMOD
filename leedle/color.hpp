@@ -35,13 +35,13 @@ struct Color {
 };
 
 namespace colors {
-    static inline auto BLACK = Color(0, 0, 0, 255);
-    static inline auto WHITE = Color(255, 255, 255, 255);
-    static inline auto RED = Color(255, 0, 0, 255);
-    static inline auto GREEN = Color(0, 255, 0, 255);
-    static inline auto BLUE = Color(0, 0, 255, 255);
-    static inline auto YELLOW = Color(255, 255, 0, 255);
-    static inline auto MAGENTA = Color(255, 0, 255, 255);
-    static inline auto CYAN = Color(0, 255, 255, 255);
-    static inline auto GRAY = Color(128, 128, 128, 255);
+    inline auto BLACK = Color(0, 0, 0, 255);
+    inline auto WHITE = Color(255, 255, 255, 255);
+    inline auto RED = Color(255, 0, 0, 255);
+    inline auto GREEN = Color(0, 255, 0, 255);
+    inline auto BLUE = Color(0, 0, 255, 255);
+    inline auto YELLOW = Color(255, 255, 0, 255);
+    inline auto MAGENTA = Color(255, 0, 255, 255);
+    inline auto CYAN = Color(0, 255, 255, 255);
+    inline auto GRAY = Color(128, 128, 128, 255);
 }

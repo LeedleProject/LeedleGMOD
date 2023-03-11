@@ -4,8 +4,6 @@
 #include <imgui_impl_dx9.h>
 #include <imgui_impl_win32.h>
 #include <kiero.h>
-#include <vadefs.h>
-#include <winuser.h>
 
 #include <functional>
 #include <loguru.hpp>
@@ -16,6 +14,20 @@
 using namespace render;
 
 static IDirect3DDevice9* DEVICE = nullptr;
+
+struct OverrideRenderState {
+	DWORD original_value;
+	D3DRENDERSTATETYPE state_type;
+	IDirect3DDevice9* direct_device;
+
+	OverrideRenderState(IDirect3DDevice9* direct_device, D3DRENDERSTATETYPE state, DWORD override_value) : state_type(state), direct_device(direct_device) {
+		direct_device->GetRenderState(state, &original_value);
+		direct_device->SetRenderState(state, override_value);
+	}
+	~OverrideRenderState() {
+		direct_device->SetRenderState(state_type, original_value);
+	}
+};
 
 void Render::setup_hooks() {
     hooks::initialize_hooks(end_scane_hook, wnd_proc_hook);
@@ -61,6 +73,9 @@ long Render::end_scene_callback(IDirect3DDevice9* device) {
         }
     }
 
+    OverrideRenderState srgb_override(device, D3DRS_SRGBWRITEENABLE, 0);
+	OverrideRenderState colorwriteenable(device, D3DRS_COLORWRITEENABLE, 0xffffffff);
+
     ImGui_ImplDX9_NewFrame();
     ImGui_ImplWin32_NewFrame();
     ImGui::NewFrame();
@@ -76,11 +91,15 @@ long Render::end_scene_callback(IDirect3DDevice9* device) {
     return end_scane_hook._hook.original(DEVICE);
 }
 
-long Render::wndproc_callback(
+extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+LRESULT __stdcall Render::wndproc_callback(
     HWND hwnd,
     UINT msg,
     WPARAM wparam,
     LPARAM lparam) {
+    
+    ImGui_ImplWin32_WndProcHandler(hwnd, msg, wparam, lparam);
+    
     return CallWindowProc(WndProcHook::original, hwnd, msg, wparam, lparam);
 }
 

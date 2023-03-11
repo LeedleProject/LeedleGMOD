@@ -25,6 +25,7 @@
 [submodule "thirdparty/imgui"]
 	path = thirdparty/imgui
 	url = https://github.com/ocornut/imgui.git
+	branch = docking
 [submodule "thirdparty/minhook"]
 	path = thirdparty/minhook
 	url = https://github.com/TsudaKageyu/minhook.git

@@ -40,17 +40,13 @@ struct WndProcHook: public hooks::IHook {
 
 class Render: leedle::IModule {
   private:
+    long end_scene_callback(IDirect3DDevice9* device);
+    LRESULT __stdcall wndproc_callback(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
+
+  public:
     EndSceneHook end_scane_hook;
     WndProcHook wnd_proc_hook;
 
-    long end_scene_callback(IDirect3DDevice9* device);
-    LRESULT __stdcall wndproc_callback(
-        HWND hwnd,
-        UINT msg,
-        WPARAM wparam,
-        LPARAM lparam);
-
-  public:
     Render() {
         EndSceneHook::callback =
             std::bind(&Render::end_scene_callback, this, std::placeholders::_1);
@@ -67,5 +63,5 @@ class Render: leedle::IModule {
     void uninitialize() override;
 };
 
-static inline Render RENDER;
+inline Render RENDER;
 }  // namespace render

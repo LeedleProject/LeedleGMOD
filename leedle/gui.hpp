@@ -11,5 +11,5 @@ struct GUI: public leedle::IModule {
     void uninitialize() override {}
 };
 
-static inline GUI GUI;
+inline GUI GUI;
 }  // namespace gui
