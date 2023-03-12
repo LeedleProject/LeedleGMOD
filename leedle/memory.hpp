@@ -76,7 +76,7 @@ namespace memory {
             return std::invoke_r<ReturnType>(pointer, args...);
         }
 
-        #ifdef WIN64
+        #ifdef _WIN64
         Address<T>& absolute(ptrdiff_t offset, size_t instruction_size) {
             address = convert_to_absolute(address, offset, instruction_size);
             return *this;
@@ -94,7 +94,7 @@ namespace memory {
         }
 
         static auto convert_to_absolute(uintptr_t address, ptrdiff_t offset, size_t instruction_size) {
-		#ifdef WIN64
+		#ifdef _WIN64
             return address + instruction_size + (*(int*)(address + offset));
 		#else
             auto rel = *(ptrdiff_t*)(address + offset);
@@ -114,7 +114,7 @@ namespace memory {
         MemoryScanner(std::string_view pattern) : pattern(pattern) {}
 
         template <class T>
-        Address<T> scan(uint8_t* begin, uint8_t* end) const {
+        Address<T*> scan(uint8_t* begin, uint8_t* end) const {
             return scan_impl(begin, end);
         }
     private:

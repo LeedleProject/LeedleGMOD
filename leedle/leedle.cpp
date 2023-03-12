@@ -19,8 +19,12 @@
 #include "math.hpp"
 #include "memory.hpp"
 #include "render.hpp"
+#include "input.hpp"
 
 #include <MinHook.h>
+#include <debugapi.h>
+#include <handleapi.h>
+#include <stdio.h>
 #include <winuser.h>
 
 auto leedle_terminate_handler() {
@@ -43,7 +47,7 @@ auto leedle_terminate_handler() {
     }
 
     loguru::flush();
-    std::abort();
+    std::terminate();
 }
 
 void leedle::logger::initialize_logging() {
@@ -84,7 +88,6 @@ void leedle::logger::initialize_logging() {
         loguru::FileMode::Append,
         loguru::Verbosity_MAX);
 }
-
 auto __stdcall entry_point(HMODULE mod) {
     std::set_terminate(leedle_terminate_handler);
 
@@ -93,14 +96,17 @@ auto __stdcall entry_point(HMODULE mod) {
     leedle::LEEDLE.unload_function = [mod]() {
         gui::GUI.uninitialize();
         render::RENDER.uninitialize();
+        input::INPUT.uninitialize();
         leedle::LEEDLE.uninitialize();
 
         FreeLibraryAndExitThread(mod, 0);
+        // TODO: Unload the module.
     };
 
     CHECK_S(MH_Initialize() == MH_OK) << "Cannot initialize core staff 0x1";
 
     leedle::LEEDLE.setup_hooks();
+    input::INPUT.setup_hooks();
     render::RENDER.setup_hooks();
     gui::GUI.setup_hooks();
 }
@@ -113,4 +119,12 @@ bool __stdcall DllMain(
         std::thread(entry_point, mod).detach();
     }
     return TRUE;
+}
+
+void my_init_function() __attribute__((constructor));
+
+void my_init_function() {
+    while (memory::MemoryModule::get_module_by_name("GameOverlayRenderer64") == INVALID_HANDLE_VALUE) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    }
 }

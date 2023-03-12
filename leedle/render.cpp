@@ -4,16 +4,19 @@
 #include <imgui_impl_dx9.h>
 #include <imgui_impl_win32.h>
 #include <kiero.h>
+#include <minwindef.h>
+#include <winuser.h>
 
 #include <functional>
 #include <loguru.hpp>
 #include <magic_enum.hpp>
 
-// TODO: Reset hook
+#include "gui.hpp"
+#include "input.hpp"
+
+#include "leedle.hpp"
 
 using namespace render;
-
-static IDirect3DDevice9* DEVICE = nullptr;
 
 struct OverrideRenderState {
 	DWORD original_value;
@@ -38,10 +41,10 @@ void Render::uninitialize() {
     hooks::remove_hooks(end_scane_hook, wnd_proc_hook);
 }
 
-long Render::end_scene_callback(IDirect3DDevice9* device) {
-    if (DEVICE == nullptr) {
-        DEVICE = device;
-        LOG_S(INFO) << "Device: " << std::hex << device;
+long Render::end_scene_callback(IDirect3DDevice9* _device) {
+    if (device == nullptr) {
+        device = _device;
+        LOG_S(INFO) << "Device: " << std::hex << _device;
 
         ImGui::CreateContext();
         LOG_S(INFO) << "ImGui initialized";
@@ -51,10 +54,16 @@ long Render::end_scene_callback(IDirect3DDevice9* device) {
             ImGui_ImplWin32_Init(hwnd);
             LOG_S(INFO) << "Win32 backend initialized";
 
-            ImGui_ImplDX9_Init(DEVICE);
+            ImGui_ImplDX9_Init(_device);
             LOG_S(INFO) << "DX9 backend initialized";
 
-            ImGui::GetIO().IniFilename = nullptr;
+            auto path = leedle::fs::get_leedle_root().append("gmod.imgui").string();
+            
+            char* path_cstr = new char[path.size() + 1];
+            std::copy(path.begin(), path.end(), path_cstr);
+            path_cstr[path.size()] = '\0';
+
+            ImGui::GetIO().IniFilename = path_cstr;
             ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_DockingEnable;
             ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_NoMouseCursorChange;
 
@@ -82,19 +91,13 @@ long Render::end_scene_callback(IDirect3DDevice9* device) {
     ImGui_ImplWin32_NewFrame();
     ImGui::NewFrame();
 
-    ImGui::Begin("First");
-
-    ImGui::End();
-
-    ImGui::Begin("Second");
-
-    ImGui::End();
+    gui::GUI.render();
 
     ImGui::EndFrame();
     ImGui::Render();
     ImGui_ImplDX9_RenderDrawData(ImGui::GetDrawData());
 
-    return end_scane_hook._hook.original(DEVICE);
+    return end_scane_hook._hook.original(_device);
 }
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
@@ -103,8 +106,26 @@ LRESULT __stdcall Render::wndproc_callback(
     UINT msg,
     WPARAM wparam,
     LPARAM lparam) {
+    if (this->hwnd == nullptr) {
+        this->hwnd = hwnd;
+    }
+
+    if (msg == WM_KEYDOWN) {
+        if (wparam == VK_INSERT) {
+            if (gui::GUI.is_open()) {
+                gui::GUI.close_menu();
+                input::INPUT.lock_cursor();
+            } else {
+                gui::GUI.open_menu();
+                input::INPUT.unlock_cursor();
+            }
+        }
+    }
     
-    ImGui_ImplWin32_WndProcHandler(hwnd, msg, wparam, lparam);
+    auto imgui_handler = ImGui_ImplWin32_WndProcHandler(hwnd, msg, wparam, lparam);
+    if (gui::GUI.is_open()) {
+        return (LRESULT)(not imgui_handler);
+    }
     
     return CallWindowProc(WndProcHook::original, hwnd, msg, wparam, lparam);
 }
