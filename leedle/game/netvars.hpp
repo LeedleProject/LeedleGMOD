@@ -57,7 +57,7 @@ class Netvars {
 
             netvars[table_name_hash][name_hash] = offset;
 
-            LOG_S(INFO) << "Registred netvar " << table->table_name << "::" << prop.prop_name;
+            DLOG_S(INFO) << "Registred netvar " << table->table_name << "::" << prop.prop_name;
         }
     }
 

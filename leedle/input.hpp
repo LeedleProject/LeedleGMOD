@@ -22,7 +22,7 @@ namespace input {
         void hook() override {
             auto mod = game::Interface<uintptr_t>::create_interface
                 (memory::material_surface, "VGUI_Surface030");
-            LOG_S(INFO) << "VGUI_Surface030: " << std::hex << mod._self;
+            DLOG_S(INFO) << "VGUI_Surface030: " << std::hex << mod._self;
             _hook.detour = lock_cursor_hooked;
             _hook.hook(mod.get_virtual_table()[66]);
         }

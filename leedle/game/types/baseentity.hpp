@@ -12,7 +12,7 @@ struct Collidable {
 
 class Player;
 
-class Entity {
+struct Entity {
     NETVAR("DT_BaseEntity", "m_iHealth", health, int);
 
     auto* get_collidable() {

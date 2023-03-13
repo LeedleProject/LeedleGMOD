@@ -21,7 +21,7 @@ add_library(leedle SHARED
   ${LOGURU_INCLUDE_DIRS}/loguru.cpp thirdparty/imgui_backends/imgui_impl_dx9.cpp
   thirdparty/imgui_backends/imgui_impl_win32.cpp thirdparty/imgui/imgui.cpp thirdparty/imgui/imgui_draw.cpp
   thirdparty/imgui/imgui_tables.cpp thirdparty/imgui/imgui_widgets.cpp thirdparty/imgui/imgui_demo.cpp
-  leedle/gui.cpp leedle/input.cpp
+  leedle/gui.cpp leedle/input.cpp leedle/hooks/hooks.cpp
 )
 
 target_link_libraries(leedle PRIVATE sago::platform_folders minhook)

@@ -20,6 +20,7 @@
 #include "memory.hpp"
 #include "render.hpp"
 #include "input.hpp"
+#include "hooks/hooks.hpp"
 
 #include <MinHook.h>
 #include <debugapi.h>
@@ -94,6 +95,7 @@ auto __stdcall entry_point(HMODULE mod) {
     leedle::logger::initialize_logging();
 
     leedle::LEEDLE.unload_function = [mod]() {
+        game::shutdown_default_hooks();
         gui::GUI.uninitialize();
         render::RENDER.uninitialize();
         input::INPUT.uninitialize();
@@ -109,6 +111,7 @@ auto __stdcall entry_point(HMODULE mod) {
     input::INPUT.setup_hooks();
     render::RENDER.setup_hooks();
     gui::GUI.setup_hooks();
+    game::initialize_default_hooks();
 }
 
 bool __stdcall DllMain(
