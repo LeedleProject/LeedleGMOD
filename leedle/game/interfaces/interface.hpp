@@ -6,6 +6,11 @@
 #include <string_view>
 #include "../../memory.hpp"
 
+/*
+    Interface name must me in uppercase
+*/
+#define DEFINE_INTERFACE(_class, name) inline game::Interface<_class> name = _class::capture_interface();
+
 namespace game {
     template <size_t index, class ReturnType = void, class ...Args>
     constexpr auto call_virtual_function(auto* _self, Args&& ...args) {
