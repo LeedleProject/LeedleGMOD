@@ -1,6 +1,7 @@
 #include "leedle.hpp"
 
 #include <Windows.h>
+#include <consoleapi.h>
 #include <corecrt_math.h>
 #include <corecrt_startup.h>
 
@@ -21,6 +22,7 @@
 #include "render.hpp"
 #include "input.hpp"
 #include "hooks/hooks.hpp"
+#include "features.hpp"
 
 #include <MinHook.h>
 #include <debugapi.h>
@@ -51,7 +53,17 @@ auto leedle_terminate_handler() {
     std::terminate();
 }
 
+auto allocate_console() {
+    #if _DEBUG
+    AllocConsole();
+    freopen_s(reinterpret_cast<FILE**>(stdout), "CONOUT$", "w", stdout);
+    freopen_s(reinterpret_cast<FILE**>(stderr), "CONOUT$", "w", stderr);
+    #endif
+}
+
 void leedle::logger::initialize_logging() {
+    allocate_console();
+
     int argc = 0;
     LPWSTR* argv = CommandLineToArgvW(GetCommandLineW(), &argc);
     loguru::init(argc, (char**)argv);
@@ -66,7 +78,7 @@ void leedle::logger::initialize_logging() {
             message.message));
     });
 
-    loguru::add_callback(
+    loguru::add_callback (
         "gamelogs",
         [](auto user_data, const loguru::Message& message) {
             if (message.verbosity >= loguru::Verbosity_INFO) {
@@ -76,7 +88,8 @@ void leedle::logger::initialize_logging() {
             }
         },
         0,
-        loguru::Verbosity_MAX);
+        loguru::Verbosity_MAX
+    );
 
     auto leedle_home = leedle::fs::get_leedle_root();
     if (not std::filesystem::exists(leedle_home)) {
@@ -89,6 +102,7 @@ void leedle::logger::initialize_logging() {
         loguru::FileMode::Append,
         loguru::Verbosity_MAX);
 }
+
 auto __stdcall entry_point(HMODULE mod) {
     std::set_terminate(leedle_terminate_handler);
 
@@ -96,10 +110,7 @@ auto __stdcall entry_point(HMODULE mod) {
 
     leedle::LEEDLE.unload_function = [mod]() {
         game::shutdown_default_hooks();
-        gui::GUI.uninitialize();
-        render::RENDER.uninitialize();
-        input::INPUT.uninitialize();
-        leedle::LEEDLE.uninitialize();
+        leedle::shutdown_modules(features::FEATURES, gui::GUI, render::RENDER, input::INPUT, leedle::LEEDLE);
 
         FreeLibraryAndExitThread(mod, 0);
         // TODO: Unload the module.
@@ -107,10 +118,7 @@ auto __stdcall entry_point(HMODULE mod) {
 
     CHECK_S(MH_Initialize() == MH_OK) << "Cannot initialize core staff 0x1";
 
-    leedle::LEEDLE.setup_hooks();
-    input::INPUT.setup_hooks();
-    render::RENDER.setup_hooks();
-    gui::GUI.setup_hooks();
+    leedle::initialize_modules(leedle::LEEDLE, input::INPUT, render::RENDER, gui::GUI, features::FEATURES);
     game::initialize_default_hooks();
 }
 
@@ -127,7 +135,7 @@ bool __stdcall DllMain(
 void my_init_function() __attribute__((constructor));
 
 void my_init_function() {
-    while (memory::MemoryModule::get_module_by_name("GameOverlayRenderer64") == INVALID_HANDLE_VALUE) {
+    while (memory::MemoryModule::get_module_by_name("serverbrowser") == INVALID_HANDLE_VALUE) {
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
 }

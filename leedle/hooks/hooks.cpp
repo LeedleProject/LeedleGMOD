@@ -16,7 +16,7 @@ bool game::CreateMoveHook::create_move_hooked(void* self, float time, void* data
 
     auto result = std::ranges::any_of(
         CREATEMOVE.callbacks | std::views::transform([&](auto& callback) {
-            return std::invoke(callback, time, data);
+            return std::invoke_r<bool>(callback, time, data);
         }) | std::ranges::to<std::vector<bool>>(), [](auto result) { return result; }
     );
     
