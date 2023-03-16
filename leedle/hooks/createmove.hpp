@@ -3,6 +3,8 @@
 #include <vadefs.h>
 #include "hook.hpp"
 
+#include "../game/types/usercmd.hpp"
+
 #include <concepts>
 #include <functional>
 #include <vector>
@@ -10,9 +12,9 @@
 namespace game {
 
 struct CreateMoveHook : public hooks::IHook {
-    using CreateMoveCallbackFn = bool(float, void*);
+    using CreateMoveCallbackFn = bool(float, game::CUserCmd*);
 
-    memory::hook_methods::MinHook<bool(__fastcall*)(void*, float, void*)> _hook;
+    memory::hook_methods::MinHook<bool(__fastcall*)(void*, float, game::CUserCmd*)> _hook;
 
     void initialize() override {
         _hook.detour = create_move_hooked;
@@ -38,7 +40,7 @@ struct CreateMoveHook : public hooks::IHook {
         DLOG_S(INFO) << "Added callback: " << std::hex << std::hash<decltype(callback)>{}(callback);
     }
 
-    static bool __fastcall create_move_hooked(void* self, float time, void* data);
+    static bool __fastcall create_move_hooked(void* self, float time, game::CUserCmd* cmd);
 };
 
 inline CreateMoveHook CREATEMOVE;

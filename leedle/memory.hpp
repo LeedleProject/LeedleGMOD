@@ -10,10 +10,12 @@
 #include <Windows.h>
 #include <Psapi.h>
 #include <minwindef.h>
+#include <stdint.h>
 #include <vadefs.h>
 #include <vcruntime.h>
 #include <exception>
 #include <stdexcept>
+#include <vector>
 #include <assert.h>
 
 #pragma comment (lib,"psapi.lib")
@@ -116,6 +118,11 @@ namespace memory {
         template <class T>
         Address<T*> scan(uint8_t* begin, uint8_t* end) const {
             return scan_impl(begin, end);
+        }
+
+        template <class T>
+        Address<T*> scan(std::ranges::range auto range) const {
+            return scan_impl(range.begin(), range.end());
         }
     private:
         std::string pattern;
