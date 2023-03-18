@@ -116,13 +116,14 @@ namespace memory {
         MemoryScanner(std::string_view pattern) : pattern(pattern) {}
 
         template <class T>
-        Address<T*> scan(uint8_t* begin, uint8_t* end) const {
-            return scan_impl(begin, end);
+        Address<T*> scan(const auto& range) const {
+            static_assert(std::ranges::range<decltype(range)>);
+            return scan_impl(range.begin(), range.end());
         }
 
         template <class T>
-        Address<T*> scan(std::ranges::range auto range) const {
-            return scan_impl(range.begin(), range.end());
+        Address<T*> scan(uint8_t* begin, uint8_t* end) const {
+            return scan_impl(begin, end);
         }
     private:
         std::string pattern;

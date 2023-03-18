@@ -1,6 +1,7 @@
 #pragma once
 
 #include "createmove.hpp"
+#include "framestage.hpp"
 
 #include "../hooks.hpp"
 

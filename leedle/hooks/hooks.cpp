@@ -6,6 +6,7 @@
 #include <ranges>
 
 #include "../game/interfaces/luashared.hpp"
+#include "../game/types/baseentity.hpp"
 
 
 bool game::CreateMoveHook::create_move_hooked(void* self, float time, game::CUserCmd* cmd) {
@@ -13,6 +14,26 @@ bool game::CreateMoveHook::create_move_hooked(void* self, float time, game::CUse
     std::call_once(flag, [&]() {
 
     });
+
+    if (cmd != nullptr && cmd->command_number > 0) {
+        auto* local_player = get_local_player();
+		static bool should_fake = false;
+		if (static bool last_jumped = false; !last_jumped && should_fake) {
+			should_fake = false;
+			cmd->buttons |= IN_JUMP;
+		} else if (cmd->buttons & IN_JUMP) {
+			if (local_player->flags() & (1 << 0)) {
+				last_jumped = true;
+				should_fake = true;
+			} else {
+				cmd->buttons &= ~IN_JUMP;
+				last_jumped = false;
+			}
+		} else {
+			last_jumped = false;
+			should_fake = false;
+		}
+    }
 
     auto result = std::ranges::any_of (
         CREATEMOVE.callbacks | std::views::transform([&](auto& callback) {
@@ -22,4 +43,8 @@ bool game::CreateMoveHook::create_move_hooked(void* self, float time, game::CUse
     );
     
     return result ? result : CREATEMOVE._hook.original(self, time, cmd);
+}
+
+void __fastcall game::FrameStageNotify::frame_stage_notify_hooked(VClient017* self, ClientFrameStage stage) {
+    return game::FRAMESTAGENOTIFY._hook.original(self, stage);
 }

@@ -11,9 +11,7 @@
 
 namespace game {
 
-struct CreateMoveHook : public hooks::IHook {
-    using CreateMoveCallbackFn = bool(float, game::CUserCmd*);
-
+struct CreateMoveHook : public hooks::IHook, public WithCallbacks<bool, float, CUserCmd*> {
     memory::hook_methods::MinHook<bool(__fastcall*)(void*, float, game::CUserCmd*)> _hook;
 
     void initialize() override {
@@ -30,14 +28,6 @@ struct CreateMoveHook : public hooks::IHook {
 
     void unhook() override {
         _hook.unhook();
-    }
-
-    std::vector<std::function<CreateMoveCallbackFn>> callbacks;
-
-    inline auto add_callback(const std::invocable<bool, float, void*> auto& callback) {
-        callbacks.emplace_back(std::move(callback));
-
-        DLOG_S(INFO) << "Added callback: " << std::hex << std::hash<decltype(callback)>{}(callback);
     }
 
     static bool __fastcall create_move_hooked(void* self, float time, game::CUserCmd* cmd);
