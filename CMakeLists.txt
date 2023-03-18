@@ -25,7 +25,7 @@ add_library(leedle SHARED
 )
 
 target_link_libraries(leedle PRIVATE sago::platform_folders minhook)
-target_include_directories(leedle PRIVATE "thirdparty/SafeCall" "thirdparty/math/include" 
+target_include_directories(leedle PRIVATE "thirdparty/SafeCall" "thirdparty/nicemath/" 
   "thirdparty/kiero/" ${LOGURU_INCLUDE_DIRS} ${WIL_INCLUDE_DIRS} "thirdparty/utf8.h" "thirdparty/toml11"
   "thirdparty/imgui_backends/" "thirdparty/imgui/" "thirdparty/minhook/include")
 

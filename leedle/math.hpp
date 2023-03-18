@@ -3,17 +3,13 @@
 #undef min
 #undef max
 
-#include <psst/math/angles.hpp>
-#include <psst/math/matrix.hpp>
-#include <psst/math/quaternion.hpp>
-#include <psst/math/vector.hpp>
+#include <nicemath.h>
 
 
 namespace math {
-using Vector = psst::math::vector<float, 3>;
-using VectorView = psst::math::vector_view<float, 3>;
+using Vector = nm::float3;
 template<size_t size, size_t size2>
-using Matrix = psst::math::matrix<float, size, size2>;
-using Quaternion = psst::math::quaternion<float>;
+using Matrix = nm::mat2x2<float>;
+using Quaternion = nm::quat<float>;
 using Angle = Vector;
 }  // namespace math

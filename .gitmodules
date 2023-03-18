@@ -29,3 +29,6 @@
 [submodule "thirdparty/minhook"]
 	path = thirdparty/minhook
 	url = https://github.com/TsudaKageyu/minhook.git
+[submodule "thirdparty/nicemath"]
+	path = thirdparty/nicemath
+	url = https://github.com/nicebyte/nicemath
