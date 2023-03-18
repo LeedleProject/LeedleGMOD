@@ -16,23 +16,25 @@ bool game::CreateMoveHook::create_move_hooked(void* self, float time, game::CUse
     });
 
     if (cmd != nullptr && cmd->command_number > 0) {
-        auto* local_player = get_local_player();
-		static bool should_fake = false;
-		if (static bool last_jumped = false; !last_jumped && should_fake) {
-			should_fake = false;
-			cmd->buttons |= IN_JUMP;
-		} else if (cmd->buttons & IN_JUMP) {
-			if (local_player->flags() & (1 << 0)) {
-				last_jumped = true;
-				should_fake = true;
-			} else {
-				cmd->buttons &= ~IN_JUMP;
-				last_jumped = false;
-			}
-		} else {
-			last_jumped = false;
-			should_fake = false;
-		}
+        auto* local_player = Player::get_local_player();
+        if (local_player != nullptr) {
+            static bool should_fake = false;
+            if (static bool last_jumped = false; !last_jumped && should_fake) {
+                should_fake = false;
+                cmd->buttons |= IN_JUMP;
+            } else if (cmd->buttons & IN_JUMP) {
+                if (local_player->flags() & (1 << 0)) {
+                    last_jumped = true;
+                    should_fake = true;
+                } else {
+                    cmd->buttons &= ~IN_JUMP;
+                    last_jumped = false;
+                }
+            } else {
+                last_jumped = false;
+                should_fake = false;
+            }
+        }
     }
 
     auto result = std::ranges::any_of (

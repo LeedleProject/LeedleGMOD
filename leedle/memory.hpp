@@ -97,7 +97,7 @@ namespace memory {
 
         static auto convert_to_absolute(uintptr_t address, ptrdiff_t offset, size_t instruction_size) {
 		#ifdef _WIN64
-            return address + instruction_size + (*(int*)(address + offset));
+            return address + instruction_size + (ptrdiff_t)(*(int*)(address + offset));
 		#else
             auto rel = *(ptrdiff_t*)(address + offset);
             return address + offset + sizeof(std::uintptr_t) + rel;

@@ -120,6 +120,8 @@ auto __stdcall entry_point(HMODULE mod) {
 
     leedle::initialize_modules(leedle::LEEDLE, input::INPUT, render::RENDER, gui::GUI, features::FEATURES);
     game::initialize_default_hooks();
+
+    DLOG_S(INFO) << "Angle sizeof: " << sizeof(math::Angle);
 }
 
 bool __stdcall DllMain(

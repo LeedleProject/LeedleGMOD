@@ -25,12 +25,12 @@ struct Entity {
     }
 };
 
-using Player = Entity;
-
-inline auto get_local_player() {
-    static auto function = memory::MemoryScanner("E8 ? ? ? ? 8B 6B 40")
-        .scan<Player*(__fastcall*)()>(memory::client).absolute(0x1, 0x5);
-    return (*function.get_pointer())();
-}
+struct Player : public Entity {
+    static auto get_local_player() {
+        static auto function = memory::MemoryScanner("E8 ? ? ? ? 8B 6B 40")
+            .scan<Player*()>(memory::client).absolute(0x1, 0x5);
+        return function.invoke_r<Player*>();
+    }
+};
 
 }
