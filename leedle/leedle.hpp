@@ -27,7 +27,7 @@ inline Leedle LEEDLE;
 
 namespace fs {
     inline auto get_leedle_root() -> std::filesystem::path {
-        return sago::getDataHome().append("\\leedlecsgo\\");
+        return sago::getDataHome().append("\\leedle\\");
     }
 }  // namespace fs
 

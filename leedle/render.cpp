@@ -57,7 +57,7 @@ long Render::end_scene_callback(IDirect3DDevice9* _device) {
             ImGui_ImplDX9_Init(_device);
             LOG_S(INFO) << "DX9 backend initialized";
 
-            auto path = leedle::fs::get_leedle_root().append("gmod.imgui").string();
+            auto path = leedle::fs::get_leedle_root().append(std::format("{}.imgui", "gmod")).string();
             
             char* path_cstr = new char[path.size() + 1];
             std::copy(path.begin(), path.end(), path_cstr);
