@@ -4,6 +4,7 @@
 
 #include <filesystem>
 #include <format>
+#include <fstream>
 #include <functional>
 #include <string>
 #include <string_view>
@@ -28,6 +29,10 @@ inline Leedle LEEDLE;
 namespace fs {
     inline auto get_leedle_root() -> std::filesystem::path {
         return sago::getDataHome().append("\\leedle\\");
+    }
+
+    inline auto create_file(std::string_view path) {
+        std::ofstream ofs(path.data(), std::ios::out | std::ios::binary);
     }
 }  // namespace fs
 
