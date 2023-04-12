@@ -32,3 +32,6 @@
 [submodule "thirdparty/nicemath"]
 	path = thirdparty/nicemath
 	url = https://github.com/nicebyte/nicemath
+[submodule "thirdparty/cpp_traits"]
+	path = thirdparty/cpp_traits
+	url = https://github.com/Morglod/cpp_traits.git
