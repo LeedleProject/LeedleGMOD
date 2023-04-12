@@ -9,14 +9,12 @@ enum class MenuState {
     Open,
 };
 
-class GUI: public leedle::IModule {
+class GUI : public Singleton<GUI> {
     MenuState menu_state = MenuState::Closed;
 
 public:
-    GUI() {}
-
-    void setup_hooks() override {}
-    void uninitialize() override {}
+    void initialize() {}
+    void shutdown() {}
 
     constexpr auto is_open() { return menu_state == MenuState::Open; }
     constexpr auto get_menu_state() { return menu_state; }
@@ -27,5 +25,4 @@ public:
     void render();
 };
 
-inline GUI GUI;
 }  // namespace gui

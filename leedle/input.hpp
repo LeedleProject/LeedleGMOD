@@ -34,14 +34,14 @@ struct LockCursorHook: public hooks::IHook {
     }
 };
 
-class Input: public leedle::IModule {
+class Input : public Singleton<Input> {
     bool should_lock_cursor = true;
 
   public:
     LockCursorHook lock_cursor_hook;
 
-    virtual void setup_hooks() override;
-    virtual void uninitialize() override;
+    void initialize();
+    void shutdown();
 
     auto is_cursor_locked() {
         return should_lock_cursor;
@@ -53,7 +53,5 @@ class Input: public leedle::IModule {
         should_lock_cursor = false;
     }
 };
-
-inline Input INPUT;
 
 }  // namespace input

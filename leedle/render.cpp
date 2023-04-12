@@ -32,13 +32,24 @@ struct OverrideRenderState {
 	}
 };
 
-void Render::setup_hooks() {
+void Render::initialize() {
+    EndSceneHook::callback =
+        std::bind(&Render::end_scene_callback, this, std::placeholders::_1);
+    WndProcHook::callback = std::bind(
+        &Render::wndproc_callback,
+        this,
+        std::placeholders::_1,
+        std::placeholders::_2,
+        std::placeholders::_3,
+        std::placeholders::_4);
+
     hooks::initialize_hooks(end_scane_hook, wnd_proc_hook);
     LOG_S(INFO) << "Render initialized";
 }
 
-void Render::uninitialize() {
+void Render::shutdown() {
     hooks::remove_hooks(end_scane_hook, wnd_proc_hook);
+    
 }
 
 long Render::end_scene_callback(IDirect3DDevice9* _device) {
@@ -91,7 +102,7 @@ long Render::end_scene_callback(IDirect3DDevice9* _device) {
     ImGui_ImplWin32_NewFrame();
     ImGui::NewFrame();
 
-    gui::GUI.render();
+    gui::GUI::get().render();
 
     ImGui::EndFrame();
     ImGui::Render();
@@ -112,18 +123,18 @@ LRESULT __stdcall Render::wndproc_callback(
 
     if (msg == WM_KEYDOWN) {
         if (wparam == VK_INSERT) {
-            if (gui::GUI.is_open()) {
-                gui::GUI.close_menu();
-                input::INPUT.lock_cursor();
+            if (gui::GUI::get().is_open()) {
+                gui::GUI::get().close_menu();
+                input::Input::get().lock_cursor();
             } else {
-                gui::GUI.open_menu();
-                input::INPUT.unlock_cursor();
+                gui::GUI::get().open_menu();
+                input::Input::get().unlock_cursor();
             }
         }
     }
     
     auto imgui_handler = ImGui_ImplWin32_WndProcHandler(hwnd, msg, wparam, lparam);
-    if (gui::GUI.is_open()) {
+    if (gui::GUI::get().is_open()) {
         return (LRESULT)(not imgui_handler);
     }
     

@@ -22,7 +22,7 @@
 #include "render.hpp"
 #include "input.hpp"
 #include "hooks/hooks.hpp"
-#include "features.hpp"
+#include "features/features.hpp"
 
 #include <MinHook.h>
 #include <debugapi.h>
@@ -108,9 +108,9 @@ auto __stdcall entry_point(HMODULE mod) {
 
     leedle::logger::initialize_logging();
 
-    leedle::LEEDLE.unload_function = [mod]() {
+    leedle::Leedle::get().unload_function = [mod]() {
         game::shutdown_default_hooks();
-        leedle::shutdown_modules(features::FEATURES, gui::GUI, render::RENDER, input::INPUT, leedle::LEEDLE);
+        leedle::shutdown_modules(features::Features::get(), gui::GUI::get(), render::Render::get(), input::Input::get(), leedle::Leedle::get());
 
         FreeLibraryAndExitThread(mod, 0);
         // TODO: Unload the module.
@@ -118,7 +118,7 @@ auto __stdcall entry_point(HMODULE mod) {
 
     CHECK_S(MH_Initialize() == MH_OK) << "Cannot initialize core staff 0x1";
 
-    leedle::initialize_modules(leedle::LEEDLE, input::INPUT, render::RENDER, gui::GUI, features::FEATURES);
+    leedle::initialize_modules(leedle::Leedle::get(), input::Input::get(), render::Render::get(), gui::GUI::get(), features::Features::get());
     game::initialize_default_hooks();
 
     DLOG_S(INFO) << "Angle sizeof: " << sizeof(math::Angle);

@@ -1,17 +1,33 @@
 #pragma once
 
 #include "../module.hpp"
+#include "feature.hpp"
+
+#include <algorithm>
+#include <memory>
+#include <vector>
+
+#include "bhop.hpp"
 
 namespace features {
 
-class Features : public leedle::IModule {
-    public:
+class Features : public Singleton<Features> {
+    std::vector<std::shared_ptr<IFeature>> features;
+public:
+    void initialize() {
+        // features = {
+        //     std::make_shared<BunnyHop>(),
+        // };
 
-    void setup_hooks() override {
+        std::ranges::for_each(features, [](auto& feature) {
+            feature->setup_hooks();
+        });
+    }
 
-    };
-    virtual void uninitialize() override{
-
+    void shutdown() {
+        std::ranges::for_each(features, [](auto& feature) {
+            feature->uninitialize();
+        });
     }
 };
 

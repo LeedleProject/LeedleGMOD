@@ -16,15 +16,14 @@
 
 
 namespace leedle {
-struct Leedle: leedle::IModule {
-    void setup_hooks() override {
+struct Leedle : Singleton<Leedle> {
+    void initialize() {
         LOG_S(INFO) << "Core initialized";
     }
-    void uninitialize() override {}
+    void shutdown() {}
 
     std::function<void()> unload_function;
 };
-inline Leedle LEEDLE;
 
 namespace fs {
     inline auto get_leedle_root() -> std::filesystem::path {

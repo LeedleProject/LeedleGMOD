@@ -41,8 +41,8 @@ void GUI::render() {
     Begin("Ну типо дебаг");
 
     Text("Build date: %s", __DATE__);
-    Text("device: %p", RENDER.get_device());
-    Text("hwnd: %p", RENDER.get_hwnd());
+    Text("device: %p", Render::get().get_device());
+    Text("hwnd: %p", Render::get().get_hwnd());
 
     End();
 

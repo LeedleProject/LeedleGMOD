@@ -4,38 +4,28 @@
 #include <concepts>
 #include <type_traits>
 
+#include "traits.hpp"
+#include "singleton.hpp"
+
 namespace leedle {
     struct Leedle;
 
-    struct IModule {
-        virtual ~IModule() = default;
-        virtual void setup_hooks() = 0;
-        virtual void uninitialize() = 0;
-    };
+    TRAIT_STRUCT(ModuleTrait, 
+        TRAIT_METHOD(void, initialize),
+        TRAIT_METHOD(void, shutdown)
+    )
 
     constexpr auto initialize_modules(auto& ...module) {
-        auto initialize_feature = [](auto& mod){
-            constexpr auto is_module = requires {
-                std::is_base_of_v<IModule, std::remove_reference_t<decltype(mod)>>;
-            };
-
-            if constexpr (is_module) {
-                mod.setup_hooks();
-            }
+        auto initialize_module = [](ModuleTrait mod){
+            mod.initialize();
         };
-        (initialize_feature(module), ...);
+        (initialize_module(module), ...);
     }
 
     constexpr auto shutdown_modules(auto& ...module) {
-        auto shutdown_feature = [](auto& mod){
-            constexpr auto is_module = requires {
-                std::is_base_of_v<IModule, std::remove_reference_t<decltype(mod)>>;
-            };
-
-            if constexpr (is_module) {
-                mod.uninitialize();
-            }
+        auto shutdown_module = [](ModuleTrait mod){
+            mod.shutdown();
         };
-        (shutdown_feature(module), ...);
+        (shutdown_module(module), ...);
     }
 }

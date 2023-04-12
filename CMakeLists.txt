@@ -13,7 +13,7 @@ set(MAGIC_ENUM_INCLUDE_DIRS "thirdparty/magic_enum/include")
 set(WIL_INCLUDE_DIRS "thirdparty/wil/include")
 
 add_definitions(-DLOGURU_WITH_STREAMS)
-include_directories(${MAGIC_ENUM_INCLUDE_DIRS} ${LOGURU_INCLUDE_DIRS})
+include_directories(${MAGIC_ENUM_INCLUDE_DIRS} ${LOGURU_INCLUDE_DIRS} "thirdparty/cpp_traits")
 
 add_library(leedle SHARED 
   leedle/leedle.cpp leedle/memory.cpp
