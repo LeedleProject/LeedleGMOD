@@ -5,15 +5,16 @@
 #include <toml.hpp>
 
 #include "leedle.hpp"
+#include "traits.hpp"
 
 namespace leedle {
 
 namespace cfg {
 
-struct IConfiguratable {
-    virtual void save_variables() = 0;
-    virtual void load_variables() = 0;
-};
+TRAIT_STRUCT(Configuratable,
+    TRAIT_METHOD(void, save_variables),
+    TRAIT_METHOD(void, load_variavles)
+)
 
 template<class Type, const char* TemplatedName>
 class ConfigVariable {

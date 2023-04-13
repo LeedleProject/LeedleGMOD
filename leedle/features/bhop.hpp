@@ -1,21 +1,13 @@
 #pragma onc
 
 #include "feature.hpp"
+#include "../singleton.hpp"
 
 namespace features {
 
-struct BunnyHop : public IFeature {
-    void create_variables() override {
-        
-    }
-
-    void save_variables() override {
-        
-    }
-
-    void load_variables() override {
-        
-    }
+struct BunnyHop : public Singleton<BunnyHop> {
+    void initialize(){}
+    void shutdown(){}
 };
 
 }

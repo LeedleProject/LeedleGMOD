@@ -2,11 +2,13 @@ cmake_minimum_required(VERSION 3.0.0)
 project(leedle VERSION 0.1.0)
 
 set(CMAKE_CXX_STANDARD 26)
-set(VCPKG_TARGET_TRIPLET "x86-windows-static")
+set(VCPKG_TARGET_TRIPLET "x64-windows-static")
 set(CMAKE_CXX_CLANG_TIDY clang-tidy -checks=-*,readability-*)
 
 add_subdirectory("thirdparty/PlatformFolders")
 add_subdirectory("thirdparty/minhook")
+
+find_package(EnTT CONFIG REQUIRED)
 
 set(LOGURU_INCLUDE_DIRS "thirdparty/loguru")
 set(MAGIC_ENUM_INCLUDE_DIRS "thirdparty/magic_enum/include")
@@ -24,7 +26,7 @@ add_library(leedle SHARED
   leedle/gui.cpp leedle/input.cpp leedle/hooks/hooks.cpp
 )
 
-target_link_libraries(leedle PRIVATE sago::platform_folders minhook)
+target_link_libraries(leedle PRIVATE sago::platform_folders minhook EnTT::EnTT)
 target_include_directories(leedle PRIVATE "thirdparty/SafeCall" "thirdparty/nicemath/" 
   "thirdparty/kiero/" ${LOGURU_INCLUDE_DIRS} ${WIL_INCLUDE_DIRS} "thirdparty/utf8.h" "thirdparty/toml11"
   "thirdparty/imgui_backends/" "thirdparty/imgui/" "thirdparty/minhook/include")

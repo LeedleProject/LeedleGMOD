@@ -12,22 +12,25 @@
 namespace features {
 
 class Features : public Singleton<Features> {
-    std::vector<std::shared_ptr<IFeature>> features;
+    constexpr auto initialize_features(auto& ...features) {
+        constexpr auto initializf = [](Feature ft) {
+            ft.initialize();
+        };
+        (initializf(features), ...);
+    }
+    constexpr auto shutdown_features(auto& ...features) {
+        constexpr auto shutdownf = [](Feature ft) {
+            ft.shutdown();
+        };
+        (shutdownf(features), ...);
+    }
 public:
     void initialize() {
-        // features = {
-        //     std::make_shared<BunnyHop>(),
-        // };
-
-        std::ranges::for_each(features, [](auto& feature) {
-            feature->setup_hooks();
-        });
+        initialize_features(BunnyHop::get());
     }
 
     void shutdown() {
-        std::ranges::for_each(features, [](auto& feature) {
-            feature->uninitialize();
-        });
+        shutdown_features(BunnyHop::get());
     }
 };
 
